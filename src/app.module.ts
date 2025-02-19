@@ -7,6 +7,8 @@ import { FavoritesModule } from './api/favorites/favorites.module';
 import { CommentsModule } from './api/comments/comments.module';
 import { TagsModule } from './api/tags/tags.module';
 import { FollowsModule } from './api/follows/follows.module';
+import { AuthModule } from './api/auth/auth.module';
+import { TestModule } from './api/test/test.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { FollowsModule } from './api/follows/follows.module';
     CommentsModule,
     TagsModule,
     FollowsModule,
+    AuthModule,
+    TestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
