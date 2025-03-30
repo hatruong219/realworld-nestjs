@@ -8,11 +8,16 @@ import { CommentsModule } from './api/comments/comments.module';
 import { TagsModule } from './api/tags/tags.module';
 import { FollowsModule } from './api/follows/follows.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as dotenv from 'dotenv';
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+import { ConfigModule } from '@nestjs/config';
+import appConfig from './configs/app.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+      load: [appConfig],
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -20,7 +25,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
       password: process.env.DB_PASSWORD,
       port: parseInt(process.env.DB_PORT) || 5432,
       database: process.env.DB_NAME,
-      autoLoadEntities: true
+      autoLoadEntities: true,
     }),
     UsersModule,
     ArticlesModule,
