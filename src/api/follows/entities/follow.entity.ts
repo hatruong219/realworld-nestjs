@@ -18,7 +18,7 @@ export class FollowEntity extends AbstractBaseEntity {
     type: 'boolean',
     default: false,
   })
-  isFollow: Boolean;
+  isFollow: boolean;
 
   @ManyToOne(() => UserEntity, (user) => user.following, { nullable: false })
   @JoinColumn({

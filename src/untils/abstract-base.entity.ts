@@ -21,4 +21,12 @@ export abstract class AbstractBaseEntity {
   changeUpdatedAt() {
     this.updatedAt = new Date();
   }
+
+  @Column({
+    name: 'deleted_at',
+    type: 'timestamp',
+    nullable: true,
+    default: null,
+  })
+  deletedAt?: Date;
 }

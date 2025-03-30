@@ -24,7 +24,9 @@ export class UsersController {
   @Public()
   @Post('/users')
   @Serialize(UserInfoReponse)
-  registerUser(@Body() registerUserInputDto: RegisterUserInputDto): Promise<UserInfoReponse> {
+  registerUser(
+    @Body() registerUserInputDto: RegisterUserInputDto,
+  ): Promise<UserInfoReponse> {
     return this.usersService.registerUser(registerUserInputDto);
   }
 

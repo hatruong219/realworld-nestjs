@@ -1,10 +1,6 @@
-import { ClassSerializerInterceptor } from "@nestjs/common";
-import { Exclude, Expose } from "class-transformer";
-import { IsEmail, IsString } from "class-validator";
+import { Expose } from 'class-transformer';
+import { IsEmail, IsString } from 'class-validator';
 
-// export class UserInfoReponse {
-//   user: UserDetailInfo;
-// }
 export class UserInfoReponse {
   @Expose()
   @IsString()
