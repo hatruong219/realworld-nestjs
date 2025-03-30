@@ -9,6 +9,7 @@ import { TagsModule } from './api/tags/tags.module';
 import { FollowsModule } from './api/follows/follows.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { ProfilesModule } from './api/profiles/profiles.module';
 import appConfig from './configs/app.config';
 
 @Module({
@@ -33,6 +34,7 @@ import appConfig from './configs/app.config';
     CommentsModule,
     TagsModule,
     FollowsModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

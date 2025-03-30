@@ -14,6 +14,7 @@ import { UserInfoReponse } from './dto/user-info.response.dto';
 import { UpdateUserInput } from './dto/update-user.input.dto';
 import { plainToInstance } from 'class-transformer';
 import { LoginResponseDto } from './dto/login.response';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +27,7 @@ export class UsersService {
   ): Promise<LoginResponseDto> {
     const user = await this.usersRepository.findOneBy({
       email: loginInputDto.email,
+      deletedAt: IsNull(),
     });
     if (!user) {
       throw new BadRequestException('Email or password wrong!!!');
@@ -46,6 +48,7 @@ export class UsersService {
   ): Promise<UserInfoReponse> {
     const user = await this.usersRepository.findOneBy({
       email: registerUserInputDto.email,
+      deletedAt: IsNull(),
     });
     if (user) {
       throw new BadRequestException('Email is registered!!!');
@@ -69,6 +72,7 @@ export class UsersService {
   ): Promise<UserInfoReponse> {
     const user = await this.usersRepository.findOneBy({
       id: currentUser.userId,
+      deletedAt: IsNull(),
     });
     if (!user) {
       throw new NotFoundException('User is not found!!!');
@@ -84,6 +88,7 @@ export class UsersService {
   ): Promise<UserInfoReponse> {
     const user = await this.usersRepository.findOneBy({
       id: currentUser.userId,
+      deletedAt: IsNull(),
     });
     if (!user) {
       throw new NotFoundException('User is not found!!!');

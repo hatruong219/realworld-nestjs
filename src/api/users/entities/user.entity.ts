@@ -13,6 +13,7 @@ export class UserEntity extends AbstractBaseEntity {
     length: 255,
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   email!: string;
 
@@ -21,6 +22,7 @@ export class UserEntity extends AbstractBaseEntity {
     length: 255,
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   userName!: string;
 

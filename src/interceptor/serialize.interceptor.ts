@@ -19,14 +19,26 @@ export class SerializeInterceptor implements NestInterceptor {
   constructor(private dto: ClassConstructor) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const request = context.switchToHttp().getRequest();
+    const responseKey = this.getResponseKey(request);
     return next.handle().pipe(
       map((data: ClassConstructor) => {
         return {
-          data: plainToInstance(this.dto, data, {
+          [responseKey]: plainToInstance(this.dto, data, {
             excludeExtraneousValues: true,
           }),
         };
       }),
     );
+  }
+
+  private getResponseKey(request: any): string {
+    const routePath = request.route?.path || '';
+    let key = routePath.split('/')[2] || 'data';
+
+    if (request.method !== 'GET' && key.endsWith('s')) {
+      key = key.slice(0, -1);
+    }
+    return key;
   }
 }

@@ -19,7 +19,7 @@ export class FavoriteEntity extends AbstractBaseEntity {
     type: 'boolean',
     default: false,
   })
-  isFavorite: Boolean;
+  isFavorite: boolean;
 
   @ManyToOne(() => UserEntity, (user) => user.favorites, { nullable: false })
   @JoinColumn({
