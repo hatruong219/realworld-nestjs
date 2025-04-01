@@ -11,5 +11,6 @@ import { TagsModule } from '../tags/tags.module';
   imports: [TypeOrmModule.forFeature([ArticleEntity]), UsersModule, TagsModule],
   controllers: [ArticlesController],
   providers: [ArticlesService, ArticlesRepository],
+  exports: [ArticlesRepository],
 })
 export class ArticlesModule {}
