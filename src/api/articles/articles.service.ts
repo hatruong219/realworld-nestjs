@@ -1,17 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ArticlesRepository } from './repositories/articles.repository';
 import { UserBasicInfoDto } from '../users/dto/basic-info.dto';
-import {
-  ArticleDto,
-  ArticlesQueryDto,
-  ArticlesResponseDto,
-} from './dto/articles.input.dto';
+import { ArticleDto, QueryArticlesDto } from './dto/articles.input.dto';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { CreateArticleDto } from './dto/article.input.dto';
 import { IsNull } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { TagsRepository } from '../tags/repositories/tags.repository';
 import { UpdateArticleDto } from './dto/update-article.input.dto';
+import { PageDto, PageMetaDto } from '../common/pagination/page.dto';
+import { ArticleEntity } from './entities/article.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -23,27 +21,36 @@ export class ArticlesService {
 
   async getArticles(
     currentUser: UserBasicInfoDto,
-    articlesQuery: ArticlesQueryDto,
-  ): Promise<ArticlesResponseDto> {
-    // Refactor code pagination
-    const take = articlesQuery.limit || 10;
-    const skip = articlesQuery.offset || 0;
+    queryArticlesDto: QueryArticlesDto,
+  ): Promise<PageDto<ArticleEntity>> {
+    const { limmit, skip, order, tag, author, favorited } = queryArticlesDto;
 
-    const [result, total] = await this.acticlesRepository.findAndCount({
-      where: { deletedAt: IsNull() },
-      take: take,
-      skip: skip,
-      order: {
-        createdAt: 'DESC',
-      },
+    const whereCondition: any = {};
+
+    if (tag) {
+      whereCondition.tags = { name: tag };
+    }
+    if (author) {
+      whereCondition.author = { username: author };
+    }
+    if (favorited) {
+      whereCondition.favorites = { username: favorited };
+    }
+
+    const [articles, itemCount] = await this.acticlesRepository.findAndCount({
+      where: whereCondition,
+      order: { createdAt: order },
+      skip,
+      take: limmit,
+      relations: {author: true, tags: true}
     });
 
-    return {
-      articles: plainToInstance(ArticleDto, result, {
-        excludeExtraneousValues: true,
-      }),
-      articlesCount: total,
-    };
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: queryArticlesDto,
+    });
+
+    return new PageDto(articles, pageMetaDto);
   }
 
   async createArticle(
@@ -74,6 +81,7 @@ export class ArticlesService {
       ...createArticle,
       slug: this.generateSlug(createArticle.title),
       tags,
+      author: user,
     });
 
     const aritcle = await this.acticlesRepository.save(newArticle);
@@ -85,7 +93,7 @@ export class ArticlesService {
   async getArticle(slug: string): Promise<ArticleDto> {
     const article = await this.acticlesRepository.findOne({
       where: { slug: slug, deletedAt: IsNull() },
-      relations: ['tags'],
+      relations: {tags: true, author: true},
     });
 
     if (!article) {
@@ -110,7 +118,7 @@ export class ArticlesService {
     }
     const article = await this.acticlesRepository.findOne({
       where: { slug: slug, deletedAt: IsNull() },
-      relations: ['tags'],
+      relations: {tags: true, author: true},
     });
     if (!article) {
       throw new BadRequestException('Article not found');
