@@ -1,6 +1,34 @@
 import { Type } from "class-transformer";
 import { IsArray, IsBoolean, IsEnum, IsInt, IsNumber, IsObject, IsOptional, Max, Min } from "class-validator";
 
+export class PageMetaDto {
+  @IsNumber()
+  page: number;
+
+  @IsNumber()
+  limmit: number;
+
+  @IsNumber()
+  itemCount: number;
+
+  @IsNumber()
+  pageCount: number;
+
+  @IsBoolean()
+  hasPreviousPage: boolean;
+
+  @IsBoolean()
+  hasNextPage: boolean;
+
+  constructor({ pageOptionsDto, itemCount }: PageMetaDtoParameters) {
+    this.page = pageOptionsDto.page;
+    this.limmit = pageOptionsDto.limmit;
+    this.itemCount = itemCount;
+    this.pageCount = Math.ceil(this.itemCount / this.limmit);
+    this.hasPreviousPage = this.page > 1;
+    this.hasNextPage = this.page < this.pageCount;
+  }
+}
 export class PageDto<T> {
   @IsArray()
   data: T[];
@@ -35,43 +63,14 @@ export class PageOptionsDto {
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number = 10;
+  limmit?: number = 10;
 
   get skip(): number {
-    return (this.page - 1) * this.take;
+    return (this.page - 1) * this.limmit;
   }
 }
 
 export interface PageMetaDtoParameters {
   pageOptionsDto: PageOptionsDto;
   itemCount: number;
-}
-
-export class PageMetaDto {
-  @IsNumber()
-  page: number;
-
-  @IsNumber()
-  take: number;
-
-  @IsNumber()
-  itemCount: number;
-
-  @IsNumber()
-  pageCount: number;
-
-  @IsBoolean()
-  hasPreviousPage: boolean;
-
-  @IsBoolean()
-  hasNextPage: boolean;
-
-  constructor({ pageOptionsDto, itemCount }: PageMetaDtoParameters) {
-    this.page = pageOptionsDto.page;
-    this.take = pageOptionsDto.take;
-    this.itemCount = itemCount;
-    this.pageCount = Math.ceil(this.itemCount / this.take);
-    this.hasPreviousPage = this.page > 1;
-    this.hasNextPage = this.page < this.pageCount;
-  }
 }

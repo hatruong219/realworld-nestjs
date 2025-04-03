@@ -1,12 +1,15 @@
 import { CommentEntity } from 'src/api/comments/entities/comment.entity';
 import { FavoriteEntity } from 'src/api/favorites/entities/favorite.entity';
 import { TagEntity } from 'src/api/tags/entities/tag.entity';
+import { UserEntity } from 'src/api/users/entities/user.entity';
 import { AbstractBaseEntity } from 'src/untils/abstract-base.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -40,6 +43,10 @@ export class ArticleEntity extends AbstractBaseEntity {
     type: 'text',
   })
   body: string;
+
+  @ManyToOne(() => UserEntity, (user) => user.articles, {nullable: false})
+  @JoinColumn({name: 'author_id'})
+  author!: UserEntity
 
   @ManyToMany(() => TagEntity, (tag) => tag.articles, { cascade: true })
   @JoinTable({

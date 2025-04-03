@@ -1,5 +1,24 @@
+import { IntersectionType } from '@nestjs/mapped-types';
 import { Expose, Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
+import { PageOptionsDto } from 'src/api/common/pagination/page.dto';
+export class AuthorDto {
+  @Expose()
+  @IsString()
+  userName: string;
+
+  @Expose()
+  @IsString()
+  bio: string;
+
+  @Expose()
+  @IsString()
+  image: string;
+
+  @Expose()
+  @IsBoolean()
+  following: boolean;
+}
 
 export class ArticleDto {
   @Expose()
@@ -22,35 +41,16 @@ export class ArticleDto {
   @IsArray()
   @Type(() => TagDto)
   tags: TagDto[];
-}
-
-export class ArticlesResponseDto {
-  @Expose()
-  @Type(() => ArticleDto)
-  articles: ArticleDto[];
 
   @Expose()
-  articlesCount: number;
+  @Type(() => AuthorDto)
+  author: AuthorDto;
 }
 
 export class TagDto {
   @Expose()
   name: string;
 }
-
-// export class AuthorDto {
-//   @Expose()
-//   username: string;
-
-//   @Expose()
-//   bio: string;
-
-//   @Expose()
-//   image: string;
-
-//   @Expose()
-//   following: boolean;
-// }
 
 export class ArticlesQueryDto {
   @IsOptional()
@@ -64,16 +64,9 @@ export class ArticlesQueryDto {
   @IsOptional()
   @IsString()
   favorited?: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  offset?: number = 0;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(1)
-  limit?: number = 20;
 }
+
+export class QueryArticlesDto extends IntersectionType(
+  PageOptionsDto,
+  ArticlesQueryDto,
+) {}

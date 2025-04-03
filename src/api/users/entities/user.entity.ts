@@ -1,3 +1,4 @@
+import { ArticleEntity } from 'src/api/articles/entities/article.entity';
 import { CommentEntity } from 'src/api/comments/entities/comment.entity';
 import { FavoriteEntity } from 'src/api/favorites/entities/favorite.entity';
 import { FollowEntity } from 'src/api/follows/entities/follow.entity';
@@ -58,4 +59,7 @@ export class UserEntity extends AbstractBaseEntity {
 
   @OneToMany(() => FollowEntity, (follow) => follow.followedUser)
   followed: FollowEntity[];
+
+  @OneToMany(() => ArticleEntity, (article) => article.author)
+  articles: ArticleEntity[];
 }
